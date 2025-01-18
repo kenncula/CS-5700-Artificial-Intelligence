@@ -1,0 +1,44 @@
+class: "OutputTest"
+success: "PASS"
+failure: "NO PASS"
+
+# Python statements initializing variables for the test below.
+preamble: """
+from test_world import create_world
+from pose import Pose
+from search_graph import SearchGraph, Node
+from rrt import RRTPlannerPolygon
+
+world = create_world()
+planner_config_rrt = {
+    "world": world,
+    "rrt_connect": False,
+    "rrt_star": False,
+    "collision_check_step_dist": 0.025,
+    "max_connection_dist": 0.5,
+    "rewire_radius": 1.5,
+}
+rrt_planner = RRTPlannerPolygon(**planner_config_rrt)
+r1 = Pose(-1, -1)
+point1 = Pose(-1, -1.1)
+point2 = Pose(-1, -1.5)
+point3 = Pose(-1, -15)
+path1 = rrt_planner.plan(r1, point1)
+path2 = rrt_planner.plan(r1, point2)
+path3 = rrt_planner.plan(r1, point3)
+ans = []
+def generate_test_path_answer(path1):
+    ans1 = path1.num_poses
+    ans2 = round(path1.length, 1)
+    return [ans1, ans2]
+
+ans += generate_test_path_answer(path1)
+ans += generate_test_path_answer(path2)
+ans += generate_test_path_answer(path3)
+"""
+
+# A python expression to be evaluated.  This expression must return the 
+# same result for the student and instructor's code.
+
+test: "ans"
+

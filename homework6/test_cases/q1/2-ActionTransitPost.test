@@ -1,0 +1,100 @@
+class: "OutputTest"
+success: "PASS"
+failure: "NO PASS: problem in `transit` postcondition"
+
+# Python statements initializing variables for the test below.
+preamble: """
+from pddl_plan import *
+import copy
+
+objects_of_type = {'robot': ['robot0'], 
+                   'room': ['room0', 'room1', 'room2', 'room3', 'room4'],
+                   'object': ['apple0', 'apple1', 'apple2', 'apple3','apple4',],
+                   'spawn': ['desk0_desktop', 'desk1_desktop', 'desk2_desktop', 'desk3_desktop', 'desk4_desktop',]
+                   }
+env_fluent = [Fluent('at_spawn', 'apple0', 'desk0_desktop'),
+              Fluent('at_spawn', 'apple1', 'desk1_desktop'),
+              Fluent('at_spawn', 'apple2', 'desk2_desktop'),
+              Fluent('at_spawn', 'apple3', 'desk3_desktop'),
+              Fluent('at_spawn', 'apple4', 'desk4_desktop'),
+              Fluent('adjacent', 'room0', 'room3'),
+              Fluent('adjacent', 'room3', 'room0'),
+              Fluent('adjacent', 'room1', 'room2'),
+              Fluent('adjacent', 'room2', 'room1'),
+              Fluent('adjacent', 'room1', 'room3'),
+              Fluent('adjacent', 'room3', 'room1'),
+              Fluent('adjacent', 'room2', 'room3'),
+              Fluent('adjacent', 'room3', 'room2'),
+              Fluent('adjacent', 'room2', 'room4'),
+              Fluent('adjacent', 'room4', 'room2'),
+              Fluent('adjacent', 'room3', 'room4'),
+              Fluent('adjacent', 'room4', 'room3'),
+              Fluent('spawn_in_room', 'desk0_desktop', 'room0'),
+              Fluent('spawn_in_room', 'desk1_desktop', 'room1'),
+              Fluent('spawn_in_room', 'desk2_desktop', 'room2'),
+              Fluent('spawn_in_room', 'desk3_desktop', 'room3'),
+              Fluent('spawn_in_room', 'desk4_desktop', 'room4'),
+              Fluent('empty', 'robot0'),
+            ]
+env_0 = copy.deepcopy(env_fluent)
+env_0.append(Fluent('robot_in_room', 'robot0', 'room0'))
+env_1 = copy.deepcopy(env_fluent)
+env_1.append(Fluent('robot_in_room', 'robot0', 'room1'))
+env_2 = copy.deepcopy(env_fluent)
+env_2.append(Fluent('robot_in_room', 'robot0', 'room2'))
+env_3 = copy.deepcopy(env_fluent)
+env_3.append(Fluent('robot_in_room', 'robot0', 'room3'))
+env_4 = copy.deepcopy(env_fluent)
+env_4.append(Fluent('robot_in_room', 'robot0', 'room4'))
+state0 = State(objects_of_type, env_0)
+state1 = State(objects_of_type, env_1)
+state2 = State(objects_of_type, env_2)
+state3 = State(objects_of_type, env_3)
+state4 = State(objects_of_type, env_4)
+action_transit = create_action_transit()
+grounded_action_transit = action_transit.grounding(state0)
+action_01 = grounded_action_transit[1]
+action_12 = grounded_action_transit[7]
+action_13 = grounded_action_transit[8]
+action_20 = grounded_action_transit[10]
+action_32 = grounded_action_transit[17]
+action_43 = grounded_action_transit[23]
+
+ans1 = 0
+s1 = action_01.apply_post_condition(state0)
+if s1 == state1:
+    ans1 = 1
+    
+ans2 = 0
+s2 = action_12.apply_post_condition(state1)
+if s2 == state2:
+    ans2 = 1
+    
+ans3 = 0
+s3 = action_13.apply_post_condition(state1)
+if s3 == state3:
+    ans3 = 1
+    
+ans4 = 0
+s4 = action_20.apply_post_condition(state2)
+if s4 == state0:
+    ans4 = 1
+    
+ans5 = 0
+s5 = action_32.apply_post_condition(state3)
+if s5 == state2:
+    ans5 = 1
+    
+ans6 = 0
+s6 = action_43.apply_post_condition(state4)
+if s6 == state3:
+    ans6 = 1
+
+ans = [ans1, ans2, ans3, ans4, ans5, ans6]
+"""
+
+# A python expression to be evaluated.  This expression must return the 
+# same result for the student and instructor's code.
+
+test: "ans"
+

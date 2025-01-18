@@ -1,0 +1,43 @@
+class: "OutputTest"
+success: "PASS"
+failure: "NO PASS"
+
+# Python statements initializing variables for the test below.
+preamble: """
+from test_world import create_world
+from pose import Pose
+from search_graph import SearchGraph, Node
+from rrt import RRTPlannerPolygon
+
+world = create_world()
+planner_config_rrt = {
+    "world": world,
+    "rrt_connect": False,
+    "rrt_star": False,
+    "collision_check_step_dist": 0.025,
+    "max_connection_dist": 0.5,
+    "rewire_radius": 1.5,
+}
+rrt_planner = RRTPlannerPolygon(**planner_config_rrt)
+r1 = Pose(-1, -1)
+point4 = Pose(-3, -4)
+point5 = Pose(2, 3.5)
+point6 = Pose(-2, 1)
+path4 = rrt_planner.plan(r1, point4)
+path5 = rrt_planner.plan(r1, point5)
+path6 = rrt_planner.plan(r1, point6)
+
+path4_range = (path4.num_poses > 6) & (path4.num_poses < 16) & (path4.length > 3.7) & (path4.length < 8.5)
+path5_range = (path5.num_poses > 15) & (path5.num_poses < 25) & (path5.length > 6.5) & (path5.length < 10.5)
+path6_range = (path6.num_poses > 4) & (path6.num_poses < 10) & (path6.length > 1.5) & (path6.length < 4.5)
+if path4_range and path5_range and path6_range:
+    ans = "Pass"
+else:
+    ans = "Some path doesn't match the expected path"
+"""
+
+# A python expression to be evaluated.  This expression must return the 
+# same result for the student and instructor's code.
+
+test: "ans"
+

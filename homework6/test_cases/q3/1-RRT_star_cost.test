@@ -1,0 +1,52 @@
+class: "OutputTest"
+success: "PASS"
+failure: "NO PASS"
+
+# Python statements initializing variables for the test below.
+preamble: """
+from test_world import create_world
+from pose import Pose
+from search_graph import SearchGraph, Node
+from rrt import RRTPlannerPolygon
+
+world = create_world()
+planner_config_rrt = {
+    "world": world,
+    "rrt_connect": False,
+    "rrt_star": False,
+    "collision_check_step_dist": 0.025,
+    "max_connection_dist": 0.5,
+    "rewire_radius": 1.5,
+}
+planner_config_rrt_star = {
+    "world": world,
+    "rrt_connect": False,
+    "rrt_star": True,
+    "collision_check_step_dist": 0.025,
+    "max_connection_dist": 5,
+    "rewire_radius": 1.5,
+}
+rrt_planner = RRTPlannerPolygon(**planner_config_rrt)
+rrt_star_planner = RRTPlannerPolygon(**planner_config_rrt_star)
+
+r1 = Pose(-1, -1)
+point1 = Pose(-1, -1.1)
+point2 = Pose(-1, -1.5)
+point3 = Pose(-1, -15)
+point4 = Pose(-3, -4)
+point5 = Pose(-1.7, -2)
+point6 = Pose(-2, 1)
+point_list = [point1, point2, point3, point4, point5, point6]
+ans = "Pass"
+for p in point_list:
+    path1 = rrt_planner.plan(r1, p)
+    path1_star = rrt_star_planner.plan(r1, p)
+    if path1.length < path1_star.length:
+        ans = "RRT* generates a longer path than RRT"
+"""
+
+# A python expression to be evaluated.  This expression must return the 
+# same result for the student and instructor's code.
+
+test: "ans"
+

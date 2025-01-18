@@ -1,0 +1,26 @@
+class: "OutputTest"
+success: "PASS"
+failure: "NO PASS"
+
+# Python statements initializing variables for the test below.
+preamble: """
+from demo_too_narrow import *
+import hashlib
+import re
+
+accept_hash = [12214686, 11120428, 24737959, 44105723]
+student_answer = q5_answer()
+s = re.sub(r'[^a-zA-Z]', '', student_answer)
+s = s.lower()
+h = int(hashlib.md5(s.encode('utf-8')).hexdigest(),16) % 47004700
+if h in accept_hash:
+	ans = 'You get the answer right!'
+else:
+	ans = 'The answer is not one of the acceptable answers'
+"""
+
+# A python expression to be evaluated.  This expression must return the 
+# same result for the student and instructor's code.
+
+test: "ans"
+

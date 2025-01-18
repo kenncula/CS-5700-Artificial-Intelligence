@@ -1,0 +1,63 @@
+class: "OutputTest"
+success: "PASS"
+failure: "NO PASS"
+
+# Python statements initializing variables for the test below.
+preamble: """
+from test_world import create_world
+from pose import Pose
+from search_graph import SearchGraph, Node
+from rrt import RRTPlannerPolygon
+
+world = create_world()
+planner_config_rrt = {
+    "world": world,
+    "rrt_connect": True,
+    "rrt_star": True,
+    "collision_check_step_dist": 0.025,
+    "max_connection_dist": 0.5,
+    "rewire_radius": 1.5,
+}
+rrt_planner = RRTPlannerPolygon(**planner_config_rrt)
+r1 = Pose(-1, -1)
+point4 = Pose(-3, -4)
+point5 = Pose(2, 3.5)
+point6 = Pose(-2, 1)
+path4 = rrt_planner.plan(r1, point4)
+path5 = rrt_planner.plan(r1, point5)
+path6 = rrt_planner.plan(r1, point6)
+ans = "Pass"
+for i in range(len(path4.poses)-1):
+    prev_pose, next_pose = path4.poses[i], path4.poses[i+1]
+    if not rrt_planner.world.is_connectable(
+            prev_pose,
+            next_pose,
+            rrt_planner.collision_check_step_dist,
+            rrt_planner.max_connection_dist,
+        ):
+        ans = "The generated path can't be connected"
+for i in range(len(path5.poses)-1):
+    prev_pose, next_pose = path5.poses[i], path5.poses[i+1]
+    if not rrt_planner.world.is_connectable(
+            prev_pose,
+            next_pose,
+            rrt_planner.collision_check_step_dist,
+            rrt_planner.max_connection_dist,
+        ):
+        ans = "The generated path can't be connected"
+for i in range(len(path6.poses)-1):
+    prev_pose, next_pose = path6.poses[i], path6.poses[i+1]
+    if not rrt_planner.world.is_connectable(
+            prev_pose,
+            next_pose,
+            rrt_planner.collision_check_step_dist,
+            rrt_planner.max_connection_dist,
+        ):
+        ans = "The generated path can't be connected"
+"""
+
+# A python expression to be evaluated.  This expression must return the 
+# same result for the student and instructor's code.
+
+test: "ans"
+
